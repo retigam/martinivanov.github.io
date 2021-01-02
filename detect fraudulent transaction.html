@@ -1,0 +1,295 @@
+<!DOCTYPE HTML>
+<!--
+	Hyperspace by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+	<head>
+		<title>ML Fraud Detection</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="assets/css/main.css" />
+		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+		<!-- default favicon -->
+		<link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon">
+		<!-- wideley used favicon -->
+		<link rel="icon" href="images/favicon-32x32.png" sizes="32x32" type="image/png">
+		<!-- for apple mobile devices -->
+		<link rel="apple-touch-icon-precomposed" href="images/apple-touch-icon.png" type="image/png" sizes="152x152">
+		<link rel="apple-touch-icon-precomposed" href="images/apple-touch-icon.png" type="image/png" sizes="120x120">
+		<!-- google tv favicon -->
+		<link rel="icon" href="images/android-chrome-192x192.png" sizes="96x96" type="image/png">
+	</head>
+	<body class="is-preload">
+
+		<!-- Sidebar -->
+			<section id="sidebar">
+				<div class="inner">
+					<nav>
+						<ul>
+							<li><a href="index.html">Back to Home</a></li>
+							<li><a href="index.html#three"class="active">Back to Projects</a></li>
+							<li><a href="#four">Contact me</a></li>
+							
+						</ul>
+					</nav>
+				</div>
+			</section>
+
+		<!-- Wrapper -->
+			<div id="wrapper">
+
+				<!-- Intro -->
+					<section id="intro" class="wrapper style1 fullscreen fade-up">
+						<div class="inner">
+							<h2>DETECTING FRAUDULENT TRANSACTIONS WITH MACHINE LEARNINGs</h2>
+							<p>Brief overview of the main points/steps about the project</p>
+							<ul class="actions">
+								<li><a href="#one" class="button scrolly">Details</a></li>
+							</ul>
+						</div>
+					</section>
+
+				<!-- One -->
+				
+					<section id="one" class="wrapper style2 spotlights" style="background-color:#262e3d; ">
+						
+						<section class="inner" >
+							
+							<!-- <a href="#" class="image" style='background-image: url("images/index1.jpg")'; background-position: center center;"> -->
+								<section style="width: 30em;">
+									<pre>
+										<code style="overflow:auto;">
+<span style="color: greenyellow;">#load dataset</span>
+df4=pandas.read_csv("PS_20174392719_1491204439457_log.csv", na_values=['NA', '?'])
+
+<span style="color: greenyellow;">#shuffle the original dataset</span>
+df4=df4.reindex(numpy.random.permutation(df4.index))
+
+<span style="color: greenyellow;">#create smaller balanced dataset for training perceptron</span>
+df_positive=df4.loc[df4["isFraud"]==1].head(8000)
+df_negative=df4.loc[df4["isFraud"]==0].head(8000)
+dfSmall= pandas.concat([df_positive, df_negative])
+dfSmall=dfSmall.reindex(numpy.random.permutation(dfSmall.index))
+
+										</code>
+									</pre>
+								</section>	
+							<!-- </a> -->
+							<div class="content">
+								<div class="inner" style="">
+									<h3>Reshaping the data</h3>
+									<p>I have reshaped the data by createing a smaller dataset. The reason is because the original dataset is unbalanced, which gives high percentage errors while using Perceptron or Neural Network.
+										This has also helped to increase the <span style="color: greenyellow;">Accuracy</span> and <span style="color: greenyellow;">F1 Score</span> of the third approach, Random Forest algorithm.
+									</p>
+									
+									
+								</div>
+							</div>
+						</section>
+					</section>
+					<!-- second snippet of code -->
+					<section id="" class="wrapper style2 spotlights" style="background-color:#262e3d; margin-top:-3em">
+						
+						<section class="inner" >
+							<!-- <a href="#" class="image" style='background-image: url("images/index1.jpg")'; background-position: center center;"> -->
+								<section style="width: 30em;">
+									<pre>
+										<code style="overflow:hidden;">
+<span style="color: greenyellow;">#make ints from string columns and remove old one</span>
+enc=LabelEncoder()
+column_name= "type"
+space=1
+enc.fit(dfSmall[column_name])
+enc_type = enc.transform(dfSmall[column_name])
+dfSmall.insert(space,"encoded_" + column_name,enc_type)
+dfSmall.pop("type")
+
+column_name= "nameOrig"
+space=3
+enc.fit(dfSmall[column_name])
+enc_type = enc.transform(dfSmall[column_name])
+dfSmall.insert(space,"encoded_" + column_name,enc_type)
+dfSmall.pop("nameOrig")
+
+column_name= "nameDest"
+space=6
+enc.fit(dfSmall[column_name])
+enc_type = enc.transform(dfSmall[column_name])
+dfSmall.insert(space,"encoded_" + column_name,enc_type)
+dfSmall.pop("nameDest")
+										</code>
+									</pre>
+								</section>	
+							<!-- </a> -->
+							<div class="content">
+								<div class="inner" style="margin-top: -3em;">
+									<h3>Converting strings to integers</h3>
+									<p>After the reshaping in order for the algorith to work properly me and my colleague have converted every 
+										<span style="color: greenyellow;">String</span> in the dataset to an <span style="color: greenyellow;">Integer</span>.</p>
+									
+								</div>
+							</div>
+						</section>
+					</section>
+					<!-- perceptron snippet -->
+
+					<section id="" class="wrapper style2 spotlights" style="background-color:#262e3d; margin-top:-3em">
+						
+						<section class="inner" >
+							<!-- <a href="#" class="image" style='background-image: url("images/index1.jpg")'; background-position: center center;"> -->
+								<section style="width: 30em;">
+									<pre>
+										<code style="overflow:auto;">
+<span style="color: greenyellow;">#Perceptron creation</span>
+ppn=Perceptron(max_iter=50, tol=0.001, eta0=1)
+
+#k-fold splitting to 5(for now, might be good with 10 as well)
+kf =KFold(5)
+
+fold = 1
+for train_index, validate_index in kf.split(X, y):
+    ppn.fit(X[train_index], y[train_index])
+    y_test=y[validate_index]
+    y_pred=ppn.predict(X[validate_index])
+    
+    #print fold number and sizes
+    print(f"Fold#{fold}, Training Size: {len(X[train_index])},  Validation Size: {len(X[validate_index])}")
+    #accuracy printing
+    print("Accuracy: %.2f" % accuracy_score(y_test, y_pred))
+    #precision check
+    precision = metrics.average_precision_score(y_test, y_pred)
+    print("Precision: %.2f" %precision)
+    #recall
+    recall = metrics.recall_score(y_test, y_pred)
+    print("Recall: %.2f" %recall)
+    fold+=1
+										</code>
+									</pre>
+								</section>	
+							<!-- </a> -->
+							<div class="content">
+								<div class="inner" style="margin-top: -3em;">
+									<h3>Perceptron Approach</h3>
+									<p>Using K-fold 5</p>
+								</div>
+							</div>
+						</section>
+					</section>
+
+					<!-- Random Forest snippet -->
+
+					<section id="" class="wrapper style2 spotlights" style="background-color:#262e3d; margin-top:-3em">
+						
+						<section class="inner" >
+							<!-- <a href="#" class="image" style='background-image: url("images/index1.jpg")'; background-position: center center;"> -->
+								<section style="width: 30em;">
+									<pre>
+										<code style="overflow:auto;">
+<span style="color: greenyellow;"># create a classifier</span>
+classifier=RandomForestClassifier(n_estimators=10)
+# train the model
+classifier.fit(X_train,y_train)
+y_pred=classifier.predict(X_test)
+
+# print accuracy
+accuracy = metrics.accuracy_score(y_test, y_pred)
+print("Accuracy: %.3f" %accuracy)
+
+# print precission
+precision = metrics.average_precision_score(y_test, y_pred)
+print("Precision: %.3f" %precision)
+
+# print confusion matrix
+cmatrix = metrics.confusion_matrix(y_test, y_pred)
+print("Conufion Matrix: \n",cmatrix)
+
+# print f1 score for binary targets
+f1 = metrics.f1_score(y_test, y_pred)
+print("f1 score: %.3f \n" %f1)
+										</code>
+									</pre>
+								</section>	
+							<!-- </a> -->
+							<div class="content">
+								<div class="inner" style="margin-top: -3em;">
+									<h3>Random Forest Approach</h3>
+									<p></p>
+								</div>
+							</div>
+						</section>
+					</section>
+
+					<!-- Two -->
+					<section id="two" class="wrapper style2 spotlights" style="background-color:#262e3d;">
+						
+								<div class="inner" style="margin-left: auto;">
+									<h2>Full Information</h2>
+									<ul class="actions">
+										<li>
+											<a href="https://github.com/dottedr/Financial_Fraud_Detection" target="_blank" rel="noopener noreferrer" class="icon brands ">
+												<i class="fab fa-github fa-2x">
+												</i>
+												<p>GitHub</p>
+											</a>
+											
+										</li>
+										<li>
+											<a href="#" class="icon brands">
+													<i class="fas fa-file-pdf fa-2x">
+													</i>
+													<p>Full Report</p>
+											</a>
+										</li>
+									</ul>
+									
+								</div>
+					</section>
+
+				<!-- Four -->
+				<section id="four" class="wrapper style1 fade-up">
+					<div class="inner">
+						<h2>Contact Me</h2>
+						<p>Email not shown for protection from spiders.</p>
+						<p>Please use Socials if you want to contact me!</p>
+						<div class="split style1">
+							
+							<section>
+								<ul class="contact">
+									
+									<li>
+										<h3>Social</h3>
+										<ul class="icons">
+											<li><a href="https://github.com/retigam" class="icon brands fa-github fa-2x"><span class="label">GitHub</span></a></li>
+											<li><a href="https://www.linkedin.com/in/martin-ivanov-73a618102/" class="icon brands fa-linkedin-in fa-2x"><span class="label">LinkedIn</span></a></li>
+										</ul>
+									</li>
+								</ul>
+							</section>
+						</div>
+					</div>
+				</section>
+
+			</div>
+
+		<!-- Footer -->
+			<footer id="footer" class="wrapper style1-alt">
+				<div class="inner">
+					<ul class="menu">
+						<li>&copy; Martin Ivanov. All rights reserved.</li><li>Design: Martin Ivanov</a></li>
+					</ul>
+				</div>
+			</footer>
+
+		<!-- Scripts -->
+			<script src="assets/js/jquery.min.js"></script>
+			<script src="assets/js/jquery.scrollex.min.js"></script>
+			<script src="assets/js/jquery.scrolly.min.js"></script>
+			<script src="assets/js/browser.min.js"></script>
+			<script src="assets/js/breakpoints.min.js"></script>
+			<script src="assets/js/util.js"></script>
+			<script src="assets/js/main.js"></script>
+
+	</body>
+</html>

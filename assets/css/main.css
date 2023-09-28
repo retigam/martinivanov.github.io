@@ -3839,11 +3839,13 @@ body.is-ie #sidebar > .inner {
 }
 
 #sidebar nav a:hover {
-  color: #141d2b9c;
+  color:#1f2d42;
+  background-color:#a4b1cd;
 }
 
 #sidebar nav a.active {
-  color: #141d2b;
+  color: #282b14;
+  background-color:#a4b1cd;
 }
 
 #sidebar nav a.active:after {
@@ -3918,7 +3920,7 @@ body.is-preload #sidebar nav ul li {
 
   #sidebar nav a:after {
     background-image: none;
-    background-color: #b74e91;
+    background-color: #940e0e;
   }
 }
 
@@ -3959,3 +3961,5 @@ body.is-preload #sidebar nav ul li {
     background-attachment: scroll;
   }
 }
+
+
